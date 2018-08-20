@@ -42,7 +42,7 @@
 
     <v-btn @click="deleteInDB" flat :disabled="enable">удалить строки {{countSelected}}</v-btn>
 
-    <v-btn flat @click="upload">
+    <v-btn flat @click="update">
       <v-icon>save_alt</v-icon>
     </v-btn>
 
@@ -87,7 +87,7 @@
     },
     methods: {
       getData () {
-        bus.$emit('getData', this.date)
+        this.$emit('getData', this.date)
       },
       deleteInDB () {
         bus.$emit('deleteInDB', this.date)
@@ -95,8 +95,8 @@
       searched () {
         bus.$emit('searched', this.search)
       },
-      upload () {
-        bus.$emit('upload')
+      update () {
+        bus.$emit('update')
       }
     }
   }

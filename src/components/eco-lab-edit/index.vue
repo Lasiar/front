@@ -1,64 +1,9 @@
 <template>
   <div>
-    <toolbar :selected="selected" @send="dialog=true" :search-list="searchList" :message="message"/>
-    <v-data-table
-      :loading="isLoading"
-      :headers="headers"
-      :items="dataTable"
-      v-model="selected"
-      hide-actions
-      select-all
-      :search="search"
-      class="elevation-12"
-    >
-      <template slot="items" slot-scope="props">
-        <td>
-          <v-checkbox
-            v-model="props.selected"
-            primary
-            hide-details
-          ></v-checkbox>
-        </td>
-        <td class="text-xs-center">{{ props.item.date }}</td>
-        <td class="text-xs-center">{{ props.item.time }}</td>
-        <td class="text-xs-center">{{ props.item.indicator }}</td>
-        <td class="text-xs-center">{{ props.item.location_name }}</td>
-        <td class="text-xs-center" :class="changed.get(props.item.id) !== undefined ? 'changed-cells' : '' ">
-          <v-edit-dialog
-            :return-value.sync="props.item.value"
-            lazy
-            @save="save(props.item)"
-            @cancel="cancel"
-            @open="open"
-            @close="close"
-          >
-            {{ props.item.value }}
-            <v-text-field
-              :rules="[rules.float, rules.required]"
-              slot="input"
-              v-model="props.item.value"
-              label="Edit"
-              :suffix="props.item.measure"
-              single-line
-            ></v-text-field>
-          </v-edit-dialog>
-        </td>
-      </template>
-
-      <v-alert slot="no-results" :value="true" color="warning" icon="warning">
-        По заданному запросу: "{{ search }}" ничего не найдено.
-      </v-alert>
-
-      <v-alert slot="no-data" :value="true" type="warning">
-        {{message}}
-      </v-alert>
-
-    </v-data-table>
-
+    <toolbar   :selected="selected" @send="dialog=true" :search-list="searchList" :message="message"/>
+    <main-talble :is-loading="isLoading" :items="dataTable" />
     <snackbar :snack-color="snackColor" :snack="snack" :snack-text="snackText"/>
-
-    <upload :items="Array.from(this.changed.values())" />
-
+    <update :items="Array.from(this.changed.values())" />
   </div>
 </template>
 
@@ -66,14 +11,13 @@
   import axios from 'axios'
   import Toolbar from './toolbar'
   import {bus} from '../../main'
-  import {headers} from '../mixins'
   import Snackbar from './snackbar'
-  import Upload from './upload'
+  import Update from './update'
+  import MainTalble from './mainTalble'
 
   export default {
     name: 'ecoLabEdit',
-    components: {Upload, Snackbar, Toolbar},
-    mixins: [headers],
+    components: {MainTalble, Update, Snackbar, Toolbar},
     data: () => ({
       isLoading: false,
       changed: new Map(),
@@ -120,6 +64,7 @@
       }
     },
     created () {
+      this.getData()
       bus.$on('getData', data => {
         this.getData(data)
       })

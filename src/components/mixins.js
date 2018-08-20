@@ -1,4 +1,13 @@
-export const headers = {
+export const table = {
+  props: {
+    items: {
+      type: Array
+    },
+    isLoading: {
+      default: false,
+      type: Boolean
+    }
+  },
   data: () => ({
     headers: [
       {text: 'Дата', align: 'center', value: 'date'},

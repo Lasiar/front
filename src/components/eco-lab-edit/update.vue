@@ -33,17 +33,14 @@
 
 <script>
   import {bus} from '../../main'
-  import {headers} from '../mixins'
+  import {table} from '../mixins'
 
   export default {
-    name: 'upload',
-    mixins: [headers],
+    name: 'updated',
+    mixins: [table],
     data: () => ({
       dialog: false
     }),
-    props: {
-      items: []
-    },
     created () {
       bus.$on('upload', () => {
         this.dialog = true
